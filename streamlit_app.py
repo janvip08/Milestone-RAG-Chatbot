@@ -14,39 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from rag_core.src.main import run_rag_pipeline
 
-def setup_sources_routing():
-    """
-    Programmatically copies the mock files into the Streamlit installation's 
-    static assets directory on startup. This allows Tornado to serve files 
-    at /sources/<filename> natively.
-    """
-    try:
-        # Find the Streamlit installation's static directory
-        streamlit_static_path = os.path.join(os.path.dirname(st.__file__), 'static')
-        sources_dest = os.path.join(streamlit_static_path, 'sources')
-        
-        # Source mock directory
-        mock_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock")
-        
-        if os.path.exists(mock_dir):
-            if os.path.exists(sources_dest):
-                # Remove to prevent conflicts
-                if os.path.islink(sources_dest):
-                    os.unlink(sources_dest)
-                elif os.path.isdir(sources_dest):
-                    shutil.rmtree(sources_dest)
-                else:
-                    os.remove(sources_dest)
-            
-            # Copy mock folder to streamlit/static/sources
-            shutil.copytree(mock_dir, sources_dest)
-            logger.info(f"Successfully configured sources routing: {sources_dest}")
-    except Exception as e:
-        logger.error(f"Error setting up sources routing: {str(e)}")
-
-# Setup static routing on app load
-setup_sources_routing()
-
+@st.cache_resource
 def initialize_vector_db():
     """
     Checks if ChromaDB contains document chunks. If empty, runs ingestion and seeding automatically.
@@ -76,7 +44,7 @@ def initialize_vector_db():
         logger.error(f"Error during startup vector DB initialization: {str(e)}", exc_info=True)
         return 0
 
-# Initialize/Auto-seed vector DB
+# Initialize/Auto-seed vector DB (cached so it runs once per deployment)
 collection_size = initialize_vector_db()
 
 # Page Configuration
@@ -335,7 +303,7 @@ if not st.session_state.messages:
                 '</div>', unsafe_allow_html=True)
 
 # Render Chat History
-for msg in st.session_state.messages:
+for idx, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
         if msg["role"] == "user":
             st.markdown(msg["content"])
@@ -345,19 +313,28 @@ for msg in st.session_state.messages:
             
             # Format custom premium citation block
             if source_url:
-                display_name = source_url.split("/")[-1]
+                filename = source_url.split("/")[-1]
                 st.markdown(f"""
-                <div class="citation-card">
+                <div class="citation-card" style="margin-bottom: 8px;">
                     <div style="font-size: 11px; font-weight: bold; color: #bacac1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Sources</div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 16px;">📄</span>
-                        <a class="citation-link" href="{source_url}" target="_blank">{display_name}</a>
-                    </div>
-                    <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;">
+                    <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-bottom: 8px;">
                         Verified from the locked source corpus. {f"• Last updated: {last_updated}" if last_updated else ""}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+                
+                # Direct local file link/download from project directory
+                local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock", filename)
+                if os.path.exists(local_path):
+                    with open(local_path, "rb") as f:
+                        file_data = f.read()
+                    st.download_button(
+                        label=f"📥 Download/View {filename}",
+                        data=file_data,
+                        file_name=filename,
+                        mime="text/html" if filename.endswith(".html") else "application/pdf",
+                        key=f"dl_hist_{idx}"
+                    )
             elif last_updated:
                 st.markdown(f"<div style='font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;'>Last updated from sources: {last_updated}</div>", unsafe_allow_html=True)
 
@@ -372,19 +349,28 @@ if st.session_state.messages and st.session_state.messages[-1]["role"] == "user"
         st.markdown(answer)
         
         if source_url:
-            display_name = source_url.split("/")[-1]
+            filename = source_url.split("/")[-1]
             st.markdown(f"""
-            <div class="citation-card">
+            <div class="citation-card" style="margin-bottom: 8px;">
                 <div style="font-size: 11px; font-weight: bold; color: #bacac1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Sources</div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 16px;">📄</span>
-                    <a class="citation-link" href="{source_url}" target="_blank">{display_name}</a>
-                </div>
-                <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;">
+                <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-bottom: 8px;">
                     Verified from the locked source corpus. {f"• Last updated: {last_updated}" if last_updated else ""}
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Direct local file link/download from project directory
+            local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock", filename)
+            if os.path.exists(local_path):
+                with open(local_path, "rb") as f:
+                    file_data = f.read()
+                st.download_button(
+                    label=f"📥 Download/View {filename}",
+                    data=file_data,
+                    file_name=filename,
+                    mime="text/html" if filename.endswith(".html") else "application/pdf",
+                    key=f"dl_new_{len(st.session_state.messages)}"
+                )
         elif last_updated:
             st.markdown(f"<div style='font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;'>Last updated from sources: {last_updated}</div>", unsafe_allow_html=True)
             
