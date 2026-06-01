@@ -47,6 +47,38 @@ def setup_sources_routing():
 # Setup static routing on app load
 setup_sources_routing()
 
+def initialize_vector_db():
+    """
+    Checks if ChromaDB contains document chunks. If empty, runs ingestion and seeding automatically.
+    """
+    try:
+        from vector_db.src.store import VectorStoreManager
+        store = VectorStoreManager()
+        count = store.collection.count()
+        logger.info(f"Startup check: ChromaDB Collection count is {count}")
+        
+        if count == 0:
+            logger.info("ChromaDB Collection is empty. Auto-triggering ingestion and database seeding...")
+            
+            # Execute Phase 1: Ingestion
+            from ingestion.main import main as run_ingestion
+            run_ingestion()
+            
+            # Execute Phase 2: Seeding
+            from vector_db.src.main import seed_database
+            seed_database()
+            
+            # Recheck count
+            count = store.collection.count()
+            logger.info(f"Auto-seeding completed. New ChromaDB Collection count: {count}")
+        return count
+    except Exception as e:
+        logger.error(f"Error during startup vector DB initialization: {str(e)}", exc_info=True)
+        return 0
+
+# Initialize/Auto-seed vector DB
+collection_size = initialize_vector_db()
+
 # Page Configuration
 st.set_page_config(
     page_title="Grow RAG Chatbot",
@@ -281,10 +313,10 @@ def parse_citation(response_text: str):
 st.markdown('<h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Grow RAG Chatbot</h1>', unsafe_allow_html=True)
 
 # Status Pill
-st.markdown('<div class="status-pill">'
-            '<div class="status-dot"></div>'
-            'Index: Healthy'
-            '</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="status-pill">'
+            f'<div class="status-dot"></div>'
+            f'Index: Healthy ({collection_size} chunks)'
+            f'</div>', unsafe_allow_html=True)
 
 # Check for pending query from suggestions
 if st.session_state.pending_query:

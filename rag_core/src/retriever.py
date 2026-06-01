@@ -23,10 +23,27 @@ def retrieve_context(clean_query: str, scheme_context: str) -> list:
         
     # 3. Query the store
     store = VectorStoreManager()
+    
+    # Log database size diagnostics
+    try:
+        col_size = store.collection.count()
+        logger.info(f"Retriever: Database collection size: {col_size} documents/chunks")
+    except Exception as e:
+        logger.error(f"Retriever: Failed to get database collection count: {str(e)}")
+        col_size = "unknown"
+
     results = store.query(
         query_vector=query_vector,
         limit=config.TOP_K_CHUNKS,
         metadata_filter=metadata_filter
     )
     
+    # Log detailed retrieval results
+    logger.info(f"Retriever: Query returned {len(results)} chunks.")
+    for idx, res in enumerate(results):
+        metadata = res.get("metadata", {})
+        source_url = metadata.get("source_url", "N/A")
+        distance = res.get("distance", 0.0)
+        logger.info(f"  Chunk #{idx+1}: Source={source_url}, Distance/Score={distance:.4f}")
+        
     return results
