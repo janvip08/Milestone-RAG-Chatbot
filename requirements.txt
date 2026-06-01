@@ -1,10 +1,8 @@
 chromadb
 sentence-transformers
 groq
-fastapi
-pydantic
-uvicorn
 beautifulsoup4
 pypdf
 python-dotenv
 requests
+streamlit
