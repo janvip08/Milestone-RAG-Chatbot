@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HDFC MF FAQ Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Style Guidance & Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#07122a",
+                    "outline": "#85948c",
+                    "surface-container-highest": "#2a344e",
+                    "tertiary-container": "#b4b7c5",
+                    "on-primary-fixed-variant": "#00513b",
+                    "secondary-container": "#00b2d6",
+                    "secondary": "#4cd6fb",
+                    "on-tertiary-fixed": "#171b26",
+                    "on-secondary": "#003642",
+                    "primary": "#44edb7",
+                    "primary-fixed": "#59fdc5",
+                    "tertiary-fixed": "#dfe2f1",
+                    "on-secondary-fixed-variant": "#004e5f",
+                    "on-surface": "#d9e2ff",
+                    "surface-variant": "#2a344e",
+                    "surface": "#07122a",
+                    "on-secondary-container": "#003f4e",
+                    "tertiary-fixed-dim": "#c3c6d4",
+                    "on-surface-variant": "#bacac1",
+                    "inverse-primary": "#006c4f",
+                    "primary-fixed-dim": "#2fe0aa",
+                    "on-tertiary": "#2c303b",
+                    "surface-container-lowest": "#030d25",
+                    "on-primary-container": "#00533c",
+                    "surface-bright": "#2f3952",
+                    "on-error": "#690005",
+                    "outline-variant": "#3c4a43",
+                    "on-tertiary-container": "#444854",
+                    "secondary-fixed": "#b3ebff",
+                    "surface-container-high": "#1f2942",
+                    "on-secondary-fixed": "#001f27",
+                    "surface-tint": "#2fe0aa",
+                    "inverse-surface": "#d9e2ff",
+                    "inverse-on-surface": "#263049",
+                    "secondary-fixed-dim": "#4cd6fb",
+                    "background": "#07122a",
+                    "surface-container": "#151f37",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#d9e2ff",
+                    "error": "#ffb4ab",
+                    "primary-container": "#00d09c",
+                    "on-primary": "#003828",
+                    "error-container": "#93000a",
+                    "tertiary": "#d0d3e1",
+                    "on-primary-fixed": "#002116",
+                    "surface-container-low": "#101b33",
+                    "on-tertiary-fixed-variant": "#434652"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "xl": "40px",
+                    "xxl": "64px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Outfit"],
+                    "headline-lg-mobile": ["Outfit"],
+                    "headline-lg": ["Outfit"],
+                    "headline-md": ["Outfit"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0d111b;
+            color: #d9e2ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(23, 30, 46, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #24314c;
+            box-shadow: inset 0.5px 0.5px 0px 0px rgba(255, 255, 255, 0.1);
+        }
+        .glow-radial {
+            background: radial-gradient(circle at center, rgba(68, 237, 183, 0.08) 0%, transparent 70%);
+        }
+        .compliance-banner {
+            background-color: #2a1a0f;
+            border-bottom: 1px solid #e58e26;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .prompt-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(68, 237, 183, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface-dim/80 backdrop-blur-xl text-primary border-b border-outline-variant flex justify-between items-center w-full px-lg py-md sticky top-0 z-50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="show_chart">show_chart</span>
+<h1 class="font-display-lg text-headline-md text-primary drop-shadow-[0_0_8px_rgba(68,237,183,0.5)]">HDFC MF FAQ Assistant</h1>
+</div>
+<button class="font-label-md text-label-md text-primary border border-primary/30 px-md py-xs rounded-full hover:bg-primary/10 transition-colors">
+            Live Llama 3
+        </button>
+</header>
+<!-- Side Navigation Drawer (Hidden by default, shown for structure) -->
+<nav class="fixed left-[-320px] top-0 h-full w-80 bg-surface-container-low/90 backdrop-blur-lg border-r border-outline-variant flex flex-col z-[60] transition-all duration-300 ease-in-out" id="nav-drawer">
+<div class="px-lg py-xl border-b border-outline-variant">
+<h2 class="font-display-lg text-headline-md text-primary">Configuration</h2>
+</div>
+<div class="flex flex-col py-md flex-1">
+<a class="text-on-surface-variant px-lg py-md hover:bg-surface-container-highest/50 flex items-center gap-md" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+                API Settings
+            </a>
+<a class="bg-secondary-container/20 text-secondary border-l-4 border-secondary px-lg py-md flex items-center gap-md" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+                Supported Schemes
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="relative min-h-screen pb-[180px]">
+<!-- Compliance Banner -->
+<div class="compliance-banner sticky top-[72px] z-40 px-lg py-sm flex items-center justify-center gap-sm">
+<span class="text-label-sm font-label-sm text-[#e58e26] text-center">
+                ⚠️ Strict Compliance: Facts-only. No investment advice.
+            </span>
+</div>
+<div class="glow-radial fixed inset-0 pointer-events-none"></div>
+<!-- Chat History -->
+<div class="px-margin-mobile md:px-margin-desktop py-xl space-y-xl max-w-4xl mx-auto">
+<!-- User Message -->
+<div class="flex flex-col items-end">
+<div class="bg-[#1e293b] border-l-4 border-primary p-lg rounded-xl max-w-[85%] shadow-lg">
+<p class="font-body-md text-on-surface">What are the key benefits of the HDFC Top 100 Fund?</p>
+</div>
+</div>
+<!-- Assistant Message -->
+<div class="flex flex-col items-start">
+<div class="glass-card p-lg rounded-xl max-w-[90%] space-y-md">
+<p class="font-body-md text-on-surface leading-relaxed">
+                        HDFC Top 100 Fund is an open-ended equity scheme predominantly investing in large-cap stocks. Key benefits include:
+                    </p>
+<ul class="list-disc pl-lg space-y-xs text-on-surface-variant">
+<li>Focus on top 100 companies by market capitalization.</li>
+<li>Potential for long-term capital appreciation.</li>
+<li>Diversification across sectors within the large-cap universe.</li>
+</ul>
+</div>
+<!-- Citation Source Card -->
+<div class="mt-md ml-xs glass-card px-md py-sm rounded-lg flex flex-col gap-xs">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#00b2d6]" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm text-[#00b2d6]/80 uppercase tracking-wider">📚 Citation Source</span>
+</div>
+<a class="text-secondary font-label-md text-label-md hover:underline" href="#">HDFC_Top100_SID_2024.pdf</a>
+<span class="font-label-sm text-label-sm italic text-on-surface-variant opacity-60">Last updated from sources: June 01, 2026</span>
+</div>
+</div>
+<!-- User Message 2 -->
+<div class="flex flex-col items-end">
+<div class="bg-[#1e293b] border-l-4 border-primary p-lg rounded-xl max-w-[85%] shadow-lg">
+<p class="font-body-md text-on-surface">Is there an exit load for this scheme?</p>
+</div>
+</div>
+<!-- Assistant Message 2 -->
+<div class="flex flex-col items-start">
+<div class="glass-card p-lg rounded-xl max-w-[90%]">
+<p class="font-body-md text-on-surface">
+                        Yes, as per the current SID: An exit load of 1% is applicable if units are redeemed or switched out within 1 year from the date of allotment. No exit load is charged for redemption after 1 year.
+                    </p>
+</div>
+<div class="mt-md ml-xs glass-card px-md py-sm rounded-lg flex flex-col gap-xs">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#00b2d6]" data-icon="description">description</span>
+<span class="font-label-sm text-label-sm text-[#00b2d6]/80 uppercase tracking-wider">📚 Citation Source</span>
+</div>
+<a class="text-secondary font-label-md text-label-md hover:underline" href="#">Fee_Structure_Q2_2026.xlsx</a>
+<span class="font-label-sm text-label-sm italic text-on-surface-variant opacity-60">Last updated from sources: June 01, 2026</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full z-50 p-lg md:p-xl pointer-events-none">
+<div class="max-w-4xl mx-auto flex flex-col gap-md pointer-events-auto">
+<!-- Interactive Prompts -->
+<div class="flex gap-md overflow-x-auto pb-sm no-scrollbar">
+<button class="prompt-button flex-shrink-0 glass-card px-md py-sm rounded-lg text-left text-label-md font-label-md text-on-surface-variant transition-all duration-200 min-w-[200px] border-primary/20">
+                    What is the exit load for HDFC Mid-Cap?
+                </button>
+<button class="prompt-button flex-shrink-0 glass-card px-md py-sm rounded-lg text-left text-label-md font-label-md text-on-surface-variant transition-all duration-200 min-w-[200px] border-primary/20">
+                    What is the lock-in period for HDFC ELSS?
+                </button>
+<button class="prompt-button flex-shrink-0 glass-card px-md py-sm rounded-lg text-left text-label-md font-label-md text-on-surface-variant transition-all duration-200 min-w-[200px] border-primary/20">
+                    How can I download my capital gains statement?
+                </button>
+</div>
+<!-- Chat Input -->
+<div class="relative flex items-center">
+<textarea class="w-full bg-[#0a0d14] border border-outline-variant focus:border-secondary focus:ring-4 focus:ring-secondary/10 rounded-xl px-lg py-md pr-xxl text-body-md text-on-surface placeholder:text-outline-variant transition-all resize-none shadow-2xl" placeholder="Ask about HDFC Mutual Funds..." rows="1"></textarea>
+<button class="absolute right-md p-sm rounded-lg bg-primary text-on-primary hover:opacity-80 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Disclaimer -->
+<footer class="fixed bottom-0 left-0 w-full px-lg py-xs z-30 bg-error-container/20 backdrop-blur-md border-t border-error-container text-center">
+<p class="font-label-sm text-label-sm text-on-error-container/80">
+            Standard HDFC Mutual Fund Compliance Disclaimer. Investing in mutual funds is subject to market risks.
+        </p>
+</footer>
+<!-- Overlay for Nav Drawer -->
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" id="nav-overlay"></div>
+<script>
+        const navDrawer = document.getElementById('nav-drawer');
+        const overlay = document.getElementById('nav-overlay');
+        const menuBtn = document.querySelector('header .material-symbols-outlined[data-icon="show_chart"]');
+
+        function toggleMenu() {
+            const isOpen = navDrawer.style.left === '0px';
+            if (!isOpen) {
+                navDrawer.style.left = '0px';
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                navDrawer.style.left = '-320px';
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Auto-expand textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+</body></html>

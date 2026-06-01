@@ -1,0 +1,19 @@
+# Environment variables
+.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Vector database data
+vector_db/data/db/
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip

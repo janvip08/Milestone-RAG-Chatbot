@@ -1,0 +1,35 @@
+name: Scheduled Ingestion & DB Seeding
+
+on:
+  schedule:
+    # Run every Monday at 10:00 AM IST (04:30 UTC)
+    - cron: '30 4 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering of the workflow from GitHub Actions UI
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Data Ingestion (Phase 1)
+        run: |
+          python -m ingestion.main
+
+      - name: Execute Vector DB Seeding & Verification (Phase 2)
+        run: |
+          python -m vector_db.src.main
