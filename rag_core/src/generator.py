@@ -87,7 +87,15 @@ def run_mock_generator(query: str, chunks: list) -> str:
                 if s not in matched_sentences:
                     matched_sentences.append(s)
 
-    # 8. Refusal check if query doesn't match topics
+    # 8. Rules for NAV / Net Asset Value / AUM / Assets Under Management
+    elif "nav" in query_lower or "net asset value" in query_lower or "aum" in query_lower or "assets under management" in query_lower:
+        for s in sentences:
+            s_lower = s.lower()
+            if any(kw in s_lower for kw in ["net asset value", "nav", "assets under management", "aum", "rs.", "crores"]):
+                if s not in matched_sentences:
+                    matched_sentences.append(s)
+
+    # 9. Refusal check if query doesn't match topics
     if not matched_sentences:
         return "I do not have enough information to answer this query."
 

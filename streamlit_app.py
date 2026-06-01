@@ -3,7 +3,10 @@ import sys
 import shutil
 import logging
 import uuid
+import gc
 import streamlit as st
+from tornado.web import Application, StaticFileHandler
+from tornado.routing import Rule, PathMatches
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -13,6 +16,30 @@ logger = logging.getLogger("StreamlitApp")
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from rag_core.src.main import run_rag_pipeline
+
+@st.cache_resource
+def setup_tornado_routing():
+    """
+    Configures an in-memory custom Tornado static file route matching /sources/(.*)
+    to point directly to the project's mock data folder.
+    This routes files securely without making any filesystem writes.
+    """
+    try:
+        # Find the tornado application instance
+        tornado_app = next(o for o in gc.get_referrers(Application) if o.__class__ is Application)
+        
+        # Local mock directory containing documents
+        mock_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock")
+        
+        # Register the static rule at the front of Tornado's routing table
+        rule = Rule(PathMatches(r"/sources/(.*)"), StaticFileHandler, {"path": mock_dir})
+        tornado_app.wildcard_router.rules.insert(0, rule)
+        logger.info(f"Successfully configured Tornado static route for /sources/ -> {mock_dir}")
+    except Exception as e:
+        logger.error(f"Failed to configure Tornado static route: {str(e)}", exc_info=True)
+
+# Run Tornado routing on app load
+setup_tornado_routing()
 
 @st.cache_resource
 def initialize_vector_db():
@@ -317,24 +344,15 @@ for idx, msg in enumerate(st.session_state.messages):
                 st.markdown(f"""
                 <div class="citation-card" style="margin-bottom: 8px;">
                     <div style="font-size: 11px; font-weight: bold; color: #bacac1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Sources</div>
-                    <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span style="font-size: 16px;">📄</span>
+                        <a class="citation-link" href="/sources/{filename}" target="_blank">{filename}</a>
+                    </div>
+                    <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6);">
                         Verified from the locked source corpus. {f"• Last updated: {last_updated}" if last_updated else ""}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-                
-                # Direct local file link/download from project directory
-                local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock", filename)
-                if os.path.exists(local_path):
-                    with open(local_path, "rb") as f:
-                        file_data = f.read()
-                    st.download_button(
-                        label=f"📥 Download/View {filename}",
-                        data=file_data,
-                        file_name=filename,
-                        mime="text/html" if filename.endswith(".html") else "application/pdf",
-                        key=f"dl_hist_{idx}"
-                    )
             elif last_updated:
                 st.markdown(f"<div style='font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;'>Last updated from sources: {last_updated}</div>", unsafe_allow_html=True)
 
@@ -353,24 +371,15 @@ if st.session_state.messages and st.session_state.messages[-1]["role"] == "user"
             st.markdown(f"""
             <div class="citation-card" style="margin-bottom: 8px;">
                 <div style="font-size: 11px; font-weight: bold; color: #bacac1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Sources</div>
-                <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <span style="font-size: 16px;">📄</span>
+                    <a class="citation-link" href="/sources/{filename}" target="_blank">{filename}</a>
+                </div>
+                <div style="font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6);">
                     Verified from the locked source corpus. {f"• Last updated: {last_updated}" if last_updated else ""}
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Direct local file link/download from project directory
-            local_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ingestion", "subphase_1_1_registry", "data", "mock", filename)
-            if os.path.exists(local_path):
-                with open(local_path, "rb") as f:
-                    file_data = f.read()
-                st.download_button(
-                    label=f"📥 Download/View {filename}",
-                    data=file_data,
-                    file_name=filename,
-                    mime="text/html" if filename.endswith(".html") else "application/pdf",
-                    key=f"dl_new_{len(st.session_state.messages)}"
-                )
         elif last_updated:
             st.markdown(f"<div style='font-size: 11px; font-style: italic; color: rgba(186, 202, 193, 0.6); margin-top: 6px;'>Last updated from sources: {last_updated}</div>", unsafe_allow_html=True)
             
