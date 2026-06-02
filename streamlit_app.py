@@ -3,6 +3,7 @@ import sys
 import shutil
 import logging
 import uuid
+import re
 import streamlit as st
 
 # Configure basic logging
@@ -64,8 +65,8 @@ st.markdown("""
     
     html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Inter', sans-serif;
-        background-color: #090e17 !important;
-        color: #d9e2ff !important;
+        background-color: #090E17 !important;
+        color: #F8FAFC !important;
     }
     
     h1, h2, h3, [data-testid="stHeader"] {
@@ -74,36 +75,35 @@ st.markdown("""
     }
     
     [data-testid="stSidebar"] {
-        background-color: #0b111e !important;
-        border-right: 1px solid rgba(133, 148, 140, 0.1) !important;
+        background-color: #0F172A !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
     
-    .status-pill {
+    .status-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background-color: rgba(0, 208, 156, 0.1);
-        border: 1px solid rgba(0, 208, 156, 0.2);
-        color: #00d09c;
+        background-color: rgba(0, 200, 150, 0.1);
+        border: 1px solid rgba(0, 200, 150, 0.2);
+        color: #00C896;
         font-size: 12px;
         font-weight: 600;
         padding: 4px 12px;
         border-radius: 9999px;
-        margin-bottom: 12px;
     }
     
     .status-dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #00d09c;
+        background-color: #00C896;
     }
     
     /* New Chat button and other buttons */
     div.stButton > button {
         background-color: transparent !important;
-        color: #00d09c !important;
-        border: 1px solid rgba(0, 208, 156, 0.3) !important;
+        color: #00C896 !important;
+        border: 1px solid rgba(0, 200, 150, 0.3) !important;
         font-weight: 600 !important;
         border-radius: 8px !important;
         transition: all 0.2s ease-in-out !important;
@@ -111,9 +111,9 @@ st.markdown("""
         padding: 10px !important;
     }
     div.stButton > button:hover {
-        background-color: rgba(0, 208, 156, 0.05) !important;
-        border-color: #00d09c !important;
-        box-shadow: 0 4px 20px rgba(0, 208, 156, 0.1) !important;
+        background-color: rgba(0, 200, 150, 0.08) !important;
+        border-color: #00C896 !important;
+        box-shadow: 0 4px 20px rgba(0, 200, 150, 0.15) !important;
         transform: translateY(-1px) !important;
     }
     
@@ -123,36 +123,110 @@ st.markdown("""
         color: #bacac1 !important;
         border: 1px solid transparent !important;
         text-align: left !important;
-        padding: 6px 12px !important;
-        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
         font-size: 13px !important;
         width: 100% !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
+        transition: all 0.15s ease-in-out !important;
     }
     .history-btn-container button:hover {
-        background-color: #152035 !important;
-        color: #ffffff !important;
+        background-color: #1E3A8A !important;
+        color: #F8FAFC !important;
     }
 
     /* Citation card styling */
     .citation-card {
-        background: rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(133, 148, 140, 0.1);
+        background: #0F172A;
+        border: 1px solid rgba(0, 200, 150, 0.15);
         border-radius: 12px;
         padding: 16px;
         margin-top: 12px;
     }
     
-    .citation-link {
-        color: #4cd6fb !important;
-        font-weight: 600;
-        text-decoration: none;
+    /* Suggested question card styles */
+    .sug-card {
+        background-color: #0F172A;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        height: 120px;
+        transition: all 0.2s ease-in-out;
+    }
+    .sug-card:hover {
+        border-color: rgba(0, 200, 150, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 200, 150, 0.05);
+        transform: translateY(-2px);
     }
     
-    .citation-link:hover {
-        text-decoration: underline;
+    /* Custom Chat Bubble Elements */
+    .chat-bubble-user {
+        background-color: #1E3A8A;
+        color: #F8FAFC;
+        padding: 12px 18px;
+        border-radius: 16px 16px 2px 16px;
+        margin-left: auto;
+        max-width: 80%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        font-size: 15px;
+        line-height: 1.5;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .chat-bubble-assistant {
+        background-color: #0F172A;
+        border: 1px solid rgba(0, 200, 150, 0.15);
+        color: #F8FAFC;
+        padding: 14px 18px;
+        border-radius: 16px 16px 16px 2px;
+        margin-right: auto;
+        max-width: 80%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .chat-container {
+        display: flex;
+        width: 100%;
+        margin-bottom: 16px;
+        align-items: flex-end;
+        gap: 10px;
+    }
+    
+    .chat-avatar {
+        font-size: 24px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0F172A;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .chat-avatar-user {
+        order: 2;
+        background: #1E3A8A;
+    }
+    
+    .chat-avatar-assistant {
+        order: 1;
+        background: #0F172A;
+        border-color: rgba(0, 200, 150, 0.2);
+    }
+    
+    .chat-wrapper-user {
+        justify-content: flex-end;
+    }
+    
+    .chat-wrapper-assistant {
+        justify-content: flex-start;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -256,6 +330,15 @@ with st.sidebar:
             st.session_state.pending_query = suggestion
             st.rerun()
 
+def markdown_to_html(text: str) -> str:
+    # Replace newlines with <br>
+    html = text.replace("\n", "<br>")
+    # Replace bold **text** with <b>text</b>
+    html = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html)
+    # Replace italic *text* with <i>text</i>
+    html = re.sub(r'\*(.*?)\*', r'<i>\1</i>', html)
+    return html
+
 # Parse helper for backend synthesized citation responses
 def parse_citation(response_text: str):
     source_idx = response_text.find("\n\nSource: ")
@@ -319,14 +402,23 @@ def render_source_citation(source_url: str, last_updated: str, key: str):
     </div>
     """, unsafe_allow_html=True)
 
-# Main Layout Page Title
-st.markdown('<h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Grow RAG Chatbot</h1>', unsafe_allow_html=True)
-
-# Status Pill
-st.markdown(f'<div class="status-pill">'
-            f'<div class="status-dot"></div>'
-            f'Index: Healthy ({collection_size} chunks)'
-            f'</div>', unsafe_allow_html=True)
+# Header Area
+header_cols = st.columns([0.08, 0.72, 0.20])
+with header_cols[0]:
+    st.markdown('<div style="font-size: 40px; text-align: center; line-height: 1.2;">📈</div>', unsafe_allow_html=True)
+with header_cols[1]:
+    st.markdown('<h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">Grow RAG Chatbot</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="margin: 0; font-size: 13px; color: #bacac1;">Premium Mutual Fund Q&A Engine</p>', unsafe_allow_html=True)
+with header_cols[2]:
+    st.markdown(f"""
+    <div style="text-align: right; margin-top: 10px;">
+        <span class="status-badge">
+            <span class="status-dot"></span>
+            Index: Healthy ({collection_size} chunks)
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+st.markdown("<hr style='margin: 16px 0; border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05);'>", unsafe_allow_html=True)
 
 # Check for pending query from suggestions
 if st.session_state.pending_query:
@@ -337,39 +429,79 @@ if st.session_state.pending_query:
 
 # If no messages, render welcome screen
 if not st.session_state.messages:
-    st.markdown('<div style="text-align: center; padding: 64px 16px;">'
-                '<h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px;">How can I help you today?</h2>'
-                '<p style="font-size: 16px; color: #bacac1; max-w-2xl; margin: 0 auto; line-height: 1.6;">'
+    st.markdown('<div style="text-align: center; padding: 40px 16px 20px 16px;">'
+                '<h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px; color: #ffffff;">How can I help you today?</h2>'
+                '<p style="font-size: 15px; color: #bacac1; max-w-2xl; margin: 0 auto; line-height: 1.6;">'
                 'Ask a factual question about listed HDFC schemes, exit loads, lock-in periods, expense ratios, benchmarks, statement downloads, NAVs, or AUMs.'
                 '</p>'
                 '</div>', unsafe_allow_html=True)
+    
+    # 2x2 Grid of suggested questions
+    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+    cols = st.columns(2)
+    
+    suggestions_data = [
+        ("💰 NAV & AUM", "What is the NAV of HDFC Focused 30 Fund?", 0),
+        ("📊 Exit Load & Fees", "What is the exit load of HDFC Focused 30 Fund?", 1),
+        ("📅 Lock-in Periods", "What is the lock-in period for HDFC ELSS Tax Saver Fund?", 0),
+        ("📋 Statement Downloads", "How can I download my capital gains statement?", 1)
+    ]
+    
+    for title, q_text, col_idx in suggestions_data:
+        with cols[col_idx]:
+            st.markdown(f"""
+            <div class="sug-card">
+                <div style="font-size: 14px; font-weight: 600; color: #00C896; margin-bottom: 8px;">{title}</div>
+                <div style="font-size: 13px; color: #bacac1; line-height: 1.5; margin-bottom: 12px;">{q_text}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Ask this question", key=f"sug_btn_{q_text}"):
+                st.session_state.pending_query = q_text
+                st.rerun()
 
 # Render Chat History
 for idx, msg in enumerate(st.session_state.messages):
-    with st.chat_message(msg["role"]):
-        if msg["role"] == "user":
-            st.markdown(msg["content"])
-        else:
-            answer, source_url, last_updated = parse_citation(msg["content"])
-            st.markdown(answer)
-            
-            # Format custom premium citation block
-            render_source_citation(source_url, last_updated, f"dl_hist_{idx}")
+    if msg["role"] == "user":
+        st.markdown(f"""
+        <div class="chat-container chat-wrapper-user">
+            <div class="chat-bubble-user">{msg["content"]}</div>
+            <div class="chat-avatar chat-avatar-user">👤</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        answer, source_url, last_updated = parse_citation(msg["content"])
+        html_answer = markdown_to_html(answer)
+        st.markdown(f"""
+        <div class="chat-container chat-wrapper-assistant">
+            <div class="chat-avatar chat-avatar-assistant">📈</div>
+            <div class="chat-bubble-assistant">{html_answer}</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Format custom premium citation block
+        render_source_citation(source_url, last_updated, f"dl_hist_{idx}")
 
 # Detect if we need to generate response for a new user message
 if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
     query = st.session_state.messages[-1]["content"]
-    with st.chat_message("assistant"):
-        with st.spinner("Verifying facts and generating answer..."):
-            response = run_rag_pipeline(query)
-            
-        answer, source_url, last_updated = parse_citation(response)
-        st.markdown(answer)
+    
+    with st.spinner("Verifying facts and generating answer..."):
+        response = run_rag_pipeline(query)
         
-        render_source_citation(source_url, last_updated, f"dl_new_{len(st.session_state.messages)}")
-            
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.rerun()
+    answer, source_url, last_updated = parse_citation(response)
+    html_answer = markdown_to_html(answer)
+    
+    st.markdown(f"""
+    <div class="chat-container chat-wrapper-assistant">
+        <div class="chat-avatar chat-avatar-assistant">📈</div>
+        <div class="chat-bubble-assistant">{html_answer}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    render_source_citation(source_url, last_updated, f"dl_new_{len(st.session_state.messages)}")
+        
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
 
 # User Input Box
 if prompt := st.chat_input("Ask a factual question about listed HDFC schemes..."):
