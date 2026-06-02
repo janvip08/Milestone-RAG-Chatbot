@@ -114,7 +114,7 @@ def chunk_cleaned_file(json_filepath: str) -> list:
             "source_url": source_url,
             "document_type": doc_type,
             "last_updated_date": last_updated_date,
-            "text": chunk_text
+            "text": f"Scheme: {scheme_name} ({doc_type}) - {chunk_text}"
         }
         chunks_with_metadata.append(chunk_record)
         

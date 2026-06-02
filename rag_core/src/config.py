@@ -15,7 +15,7 @@ GROQ_MODEL = "llama-3.1-8b-instant"
 TEMPERATURE = 0.0
 
 # Search Settings
-TOP_K_CHUNKS = 3
+TOP_K_CHUNKS = 5
 
 # System Prompt Rules
 SYSTEM_PROMPT = (
