@@ -83,8 +83,8 @@ st.markdown("""
     
     /* Set proper top padding to avoid content clipping while maintaining fold visibility */
     .block-container, [data-testid="stMainBlockContainer"] {
-        padding-top: 3.5rem !important;
-        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
         max-width: 1200px !important;
@@ -172,20 +172,42 @@ st.markdown("""
         margin-top: 12px;
     }
     
-    /* Suggested question card styles */
-    .sug-card {
-        background-color: #0F172A;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        height: 120px;
-        transition: all 0.2s ease-in-out;
+    /* Suggested question card button styles */
+    .sug-card-btn {
+        margin-bottom: 8px;
+        width: 100%;
     }
-    .sug-card:hover {
-        border-color: rgba(0, 200, 150, 0.3);
-        box-shadow: 0 4px 20px rgba(0, 200, 150, 0.05);
-        transform: translateY(-2px);
+    
+    .sug-card-btn button {
+        background-color: #0F172A !important;
+        color: #bacac1 !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        padding: 8px 12px !important;
+        min-height: 44px !important;
+        text-align: left !important;
+        display: block !important;
+        width: 100% !important;
+        transition: all 0.2s ease-in-out !important;
+        white-space: normal !important;
+        font-size: 11.5px !important;
+        line-height: 1.3 !important;
+    }
+    
+    .sug-card-btn button:hover {
+        border-color: rgba(0, 200, 150, 0.3) !important;
+        background-color: rgba(0, 200, 150, 0.03) !important;
+        color: #F8FAFC !important;
+        box-shadow: 0 4px 15px rgba(0, 200, 150, 0.05) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .sug-card-btn button strong {
+        color: #00C896 !important;
+        display: inline-block !important;
+        font-size: 11.5px !important;
+        margin-right: 6px !important;
+        font-weight: 600 !important;
     }
     
     /* Custom Chat Bubble Elements */
@@ -259,73 +281,123 @@ st.markdown("""
     [data-testid="stBottom"] {
         background-color: #090E17 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-        padding-bottom: 40px !important;
+        padding-bottom: 20px !important;
     }
     
     [data-testid="stBottomBlockContainer"] {
         background-color: #090E17 !important;
     }
 
-    /* Remove default light containers or background wrappers around input */
-    [data-testid="stChatInput"] {
+    /* Style the outer wrapper of the chat input to prevent any white outline/leak */
+    [data-testid="stChatInput"],
+    [data-testid="stChatInputContainer"],
+    .stChatInputContainer,
+    div[role="search"],
+    form[data-testid="stChatInputForm"] {
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
     }
 
-    /* Chat Input TextArea */
-    [data-testid="stChatInput"] textarea {
+    /* Style the inner wrapper of the chat input to form the custom container */
+    [data-testid="stChatInput"] > div,
+    [data-testid="stChatInput"] form {
         background-color: #0F172A !important;
-        color: #F8FAFC !important;
         border: 1px solid #1E293B !important;
         border-radius: 16px !important;
-        padding: 12px 16px !important;
-        font-family: 'Inter', sans-serif !important;
-        font-size: 15px !important;
-        line-height: 1.5 !important;
+        height: 56px !important;
+        min-height: 56px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 16px !important;
         transition: all 0.2s ease-in-out !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
+    
+    [data-testid="stChatInput"] > div:focus-within,
+    [data-testid="stChatInput"] form:focus-within {
+        border-color: #00C896 !important;
+        box-shadow: 0 0 0 2px rgba(0, 200, 150, 0.15), 0 4px 16px rgba(0, 200, 150, 0.1) !important;
+    }
+
+    /* Chat Input TextArea styled as transparent child */
+    [data-testid="stChatInput"] textarea,
+    [data-testid="stChatInput"] form textarea {
+        background-color: transparent !important;
+        color: #F8FAFC !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0px 8px !important;
+        margin: 0 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        outline: none !important;
+        height: 24px !important;
+        min-height: 24px !important;
+        max-height: 24px !important;
+        resize: none !important;
+        overflow: hidden !important;
+        align-self: center !important;
+        flex-grow: 1 !important;
+    }
 
     /* Placeholder text styling */
-    [data-testid="stChatInput"] textarea::placeholder {
+    [data-testid="stChatInput"] textarea::placeholder,
+    [data-testid="stChatInput"] form textarea::placeholder {
         color: #94A3B8 !important;
         opacity: 1 !important;
     }
 
-    /* Focus border and glow (removes red borders completely) */
-    [data-testid="stChatInput"] textarea:focus {
-        border-color: #00C896 !important;
-        box-shadow: 0 0 0 2px rgba(0, 200, 150, 0.15), 0 4px 16px rgba(0, 200, 150, 0.1) !important;
+    /* Remove default outlines and focus styles of inner textarea */
+    [data-testid="stChatInput"] textarea:focus,
+    [data-testid="stChatInput"] form textarea:focus {
+        border: none !important;
+        box-shadow: none !important;
         outline: none !important;
     }
 
     /* Send button styling */
-    [data-testid="stChatInput"] button {
+    [data-testid="stChatInput"] button,
+    [data-testid="stChatInput"] form button {
         background-color: #00C896 !important;
         border: none !important;
         border-radius: 8px !important;
         color: #FFFFFF !important;
+        height: 32px !important;
+        width: 32px !important;
+        min-height: 32px !important;
+        min-width: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         transition: all 0.2s ease-in-out !important;
+        align-self: center !important;
+        margin: 0 !important;
     }
 
-    [data-testid="stChatInput"] button:hover {
+    [data-testid="stChatInput"] button:hover,
+    [data-testid="stChatInput"] form button:hover {
         background-color: #00b084 !important;
         transform: scale(1.05) !important;
     }
 
-    [data-testid="stChatInput"] button:disabled {
+    [data-testid="stChatInput"] button:disabled,
+    [data-testid="stChatInput"] form button:disabled {
         background-color: rgba(0, 200, 150, 0.2) !important;
         cursor: not-allowed !important;
         transform: none !important;
     }
 
-    [data-testid="stChatInput"] button svg path {
+    [data-testid="stChatInput"] button svg path,
+    [data-testid="stChatInput"] form button svg path {
         fill: #FFFFFF !important;
     }
     
-    [data-testid="stChatInput"] button:disabled svg path {
+    [data-testid="stChatInput"] button:disabled svg path,
+    [data-testid="stChatInput"] form button:disabled svg path {
         fill: rgba(255, 255, 255, 0.4) !important;
     }
 
@@ -538,22 +610,24 @@ def render_source_citation(source_url: str, last_updated: str, key: str):
     """, unsafe_allow_html=True)
 
 # Header Area
-header_cols = st.columns([0.08, 0.72, 0.20])
-with header_cols[0]:
-    st.markdown('<div style="font-size: 40px; text-align: center; line-height: 1.2;">📈</div>', unsafe_allow_html=True)
-with header_cols[1]:
-    st.markdown('<h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">Grow RAG Chatbot</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="margin: 0; font-size: 13px; color: #bacac1;">Premium Mutual Fund Q&A Engine</p>', unsafe_allow_html=True)
-with header_cols[2]:
-    st.markdown(f"""
-    <div style="text-align: right; margin-top: 10px;">
+st.markdown(f"""
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; margin-bottom: 4px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 12px; min-width: 250px;">
+        <div style="font-size: 32px; line-height: 1;">📈</div>
+        <div>
+            <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.2; word-wrap: break-word; overflow-wrap: break-word;">Grow RAG Chatbot</h1>
+            <p style="margin: 0; font-size: 12px; color: #bacac1; line-height: 1.2; word-wrap: break-word; overflow-wrap: break-word;">Premium Mutual Fund Q&A Engine</p>
+        </div>
+    </div>
+    <div style="margin-top: 4px;">
         <span class="status-badge">
             <span class="status-dot"></span>
             Index: Healthy ({collection_size} chunks)
         </span>
     </div>
-    """, unsafe_allow_html=True)
-st.markdown("<hr style='margin: 16px 0; border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05);'>", unsafe_allow_html=True)
+</div>
+<hr style="margin: 0 0 10px 0; border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+""", unsafe_allow_html=True)
 
 # Check for pending query from suggestions
 if st.session_state.pending_query:
@@ -564,15 +638,15 @@ if st.session_state.pending_query:
 
 # If no messages, render welcome screen
 if not st.session_state.messages:
-    st.markdown('<div style="text-align: center; padding: 40px 16px 20px 16px;">'
-                '<h2 style="font-size: 32px; font-weight: 700; margin-bottom: 12px; color: #ffffff;">How can I help you today?</h2>'
-                '<p style="font-size: 15px; color: #bacac1; max-w-2xl; margin: 0 auto; line-height: 1.6;">'
+    st.markdown('<div style="text-align: center; padding: 12px 16px; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">'
+                '<h2 style="font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: #ffffff; word-wrap: break-word; overflow-wrap: break-word;">How can I help you today?</h2>'
+                '<p style="font-size: 13px; color: #bacac1; max-width: 600px; margin: 0 auto; line-height: 1.4; word-wrap: break-word; overflow-wrap: break-word;">'
                 'Ask a factual question about listed HDFC schemes, exit loads, lock-in periods, expense ratios, benchmarks, statement downloads, NAVs, or AUMs.'
                 '</p>'
                 '</div>', unsafe_allow_html=True)
     
     # 2x2 Grid of suggested questions
-    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 2px;'></div>", unsafe_allow_html=True)
     cols = st.columns(2)
     
     suggestions_data = [
@@ -584,15 +658,11 @@ if not st.session_state.messages:
     
     for title, q_text, col_idx in suggestions_data:
         with cols[col_idx]:
-            st.markdown(f"""
-            <div class="sug-card">
-                <div style="font-size: 14px; font-weight: 600; color: #00C896; margin-bottom: 8px;">{title}</div>
-                <div style="font-size: 13px; color: #bacac1; line-height: 1.5; margin-bottom: 12px;">{q_text}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Ask this question", key=f"sug_btn_{q_text}"):
+            st.markdown('<div class="sug-card-btn">', unsafe_allow_html=True)
+            if st.button(f"**{title}** • {q_text}", key=f"sug_btn_{q_text}"):
                 st.session_state.pending_query = q_text
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # Render Chat History
 for idx, msg in enumerate(st.session_state.messages):
