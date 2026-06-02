@@ -81,9 +81,9 @@ st.markdown("""
         color: #F8FAFC !important;
     }
     
-    /* Remove default Streamlit top padding to collapse the top space */
+    /* Set proper top padding to avoid content clipping while maintaining fold visibility */
     .block-container, [data-testid="stMainBlockContainer"] {
-        padding-top: 1.5rem !important;
+        padding-top: 3.5rem !important;
         padding-bottom: 3rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
@@ -93,8 +93,6 @@ st.markdown("""
     
     [data-testid="stHeader"] {
         background-color: transparent !important;
-        height: 0px !important;
-        min-height: 0px !important;
     }
     
     h1, h2, h3 {
