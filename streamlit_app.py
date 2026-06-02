@@ -192,7 +192,7 @@ st.markdown("""
     .chat-container {
         display: flex;
         width: 100%;
-        margin-bottom: 16px;
+        margin-bottom: 28px;
         align-items: flex-end;
         gap: 10px;
     }
@@ -227,6 +227,115 @@ st.markdown("""
     
     .chat-wrapper-assistant {
         justify-content: flex-start;
+    }
+
+    /* Bottom sticky container styling to blend inputs seamlessly */
+    [data-testid="stBottom"] {
+        background-color: #090E17 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding-bottom: 40px !important;
+    }
+    
+    [data-testid="stBottomBlockContainer"] {
+        background-color: #090E17 !important;
+    }
+
+    /* Remove default light containers or background wrappers around input */
+    [data-testid="stChatInput"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* Chat Input TextArea */
+    [data-testid="stChatInput"] textarea {
+        background-color: #0F172A !important;
+        color: #F8FAFC !important;
+        border: 1px solid #1E293B !important;
+        border-radius: 16px !important;
+        padding: 12px 16px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 15px !important;
+        line-height: 1.5 !important;
+        transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Placeholder text styling */
+    [data-testid="stChatInput"] textarea::placeholder {
+        color: #94A3B8 !important;
+        opacity: 1 !important;
+    }
+
+    /* Focus border and glow (removes red borders completely) */
+    [data-testid="stChatInput"] textarea:focus {
+        border-color: #00C896 !important;
+        box-shadow: 0 0 0 2px rgba(0, 200, 150, 0.15), 0 4px 16px rgba(0, 200, 150, 0.1) !important;
+        outline: none !important;
+    }
+
+    /* Send button styling */
+    [data-testid="stChatInput"] button {
+        background-color: #00C896 !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: #FFFFFF !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    [data-testid="stChatInput"] button:hover {
+        background-color: #00b084 !important;
+        transform: scale(1.05) !important;
+    }
+
+    [data-testid="stChatInput"] button:disabled {
+        background-color: rgba(0, 200, 150, 0.2) !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+    }
+
+    [data-testid="stChatInput"] button svg path {
+        fill: #FFFFFF !important;
+    }
+    
+    [data-testid="stChatInput"] button:disabled svg path {
+        fill: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    /* Style Download Button as a premium citation card */
+    div.stDownloadButton {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    div.stDownloadButton > button {
+        background-color: #0F172A !important;
+        color: #F8FAFC !important;
+        border: 1px solid #1E293B !important;
+        border-radius: 12px !important;
+        padding: 12px 16px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 14px !important;
+        width: 100% !important;
+        text-align: left !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    div.stDownloadButton > button:hover {
+        background-color: rgba(0, 200, 150, 0.05) !important;
+        border-color: #00C896 !important;
+        color: #00C896 !important;
+        box-shadow: 0 4px 20px rgba(0, 200, 150, 0.15) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    div.stDownloadButton > button:active {
+        transform: translateY(0) !important;
     }
 </style>
 """, unsafe_allow_html=True)
