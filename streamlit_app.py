@@ -28,8 +28,20 @@ def initialize_vector_db():
         count = store.collection.count()
         logger.info(f"Startup check: ChromaDB Collection count is {count}")
         
-        if count == 0:
-            logger.info("ChromaDB Collection is empty. Auto-triggering ingestion and database seeding...")
+        if count < 100:
+            logger.info(f"ChromaDB Collection count ({count}) is outdated (expected >= 100). Auto-triggering database rebuild...")
+            from vector_db.src import config as db_config
+            try:
+                store.client.delete_collection(db_config.COLLECTION_NAME)
+                logger.info(f"Outdated collection '{db_config.COLLECTION_NAME}' deleted.")
+            except Exception as e:
+                logger.warning(f"Could not delete collection: {e}")
+                
+            # Recreate empty collection
+            store.collection = store.client.get_or_create_collection(
+                name=db_config.COLLECTION_NAME,
+                metadata={"hnsw:space": "cosine"}
+            )
             
             # Execute Phase 1: Ingestion
             from ingestion.main import main as run_ingestion
@@ -41,7 +53,7 @@ def initialize_vector_db():
             
             # Recheck count
             count = store.collection.count()
-            logger.info(f"Auto-seeding completed. New ChromaDB Collection count: {count}")
+            logger.info(f"Rebuild completed. New ChromaDB Collection count: {count}")
         return count
     except Exception as e:
         logger.error(f"Error during startup vector DB initialization: {str(e)}", exc_info=True)
