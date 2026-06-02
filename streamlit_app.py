@@ -81,7 +81,23 @@ st.markdown("""
         color: #F8FAFC !important;
     }
     
-    h1, h2, h3, [data-testid="stHeader"] {
+    /* Remove default Streamlit top padding to collapse the top space */
+    .block-container, [data-testid="stMainBlockContainer"] {
+        padding-top: 1.5rem !important;
+        padding-bottom: 3rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+    }
+    
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+        height: 0px !important;
+        min-height: 0px !important;
+    }
+    
+    h1, h2, h3 {
         font-family: 'Outfit', sans-serif;
         color: #ffffff !important;
     }
