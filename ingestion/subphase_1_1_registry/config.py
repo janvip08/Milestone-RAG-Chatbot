@@ -18,8 +18,8 @@ for path in [RAW_DIR, CLEANED_DIR, CHUNKS_DIR, MOCK_DIR]:
 # Configuration Flags
 USE_MOCK_FALLBACK = True  # If True, scraper uses local mock data to guarantee execution
 SCRAPE_DELAY = 1.0       # Delay in seconds between requests for polite scraping
-CHUNK_SIZE = 800         # Target size of semantic chunks (in characters)
-CHUNK_OVERLAP = 150      # Overlap between adjacent chunks (in characters)
+CHUNK_SIZE = 300         # Target size of semantic chunks (in characters)
+CHUNK_OVERLAP = 75       # Overlap between adjacent chunks (in characters)
 
 # AMC Definition
 AMC_NAME = "HDFC Mutual Fund"
@@ -40,7 +40,7 @@ SCHEMES = [
             {
                 "url": "https://www.hdfcfund.com/sid/hdfc-mid-cap-opportunities-fund.pdf",
                 "doc_type": "SID",
-                "filename": "hdfc_mid_cap_sid.pdf"
+                "filename": "hdfc_mid_cap_sid.html"
             }
         ]
     },
@@ -58,7 +58,7 @@ SCHEMES = [
             {
                 "url": "https://www.hdfcfund.com/sid/hdfc-flexi-cap-fund.pdf",
                 "doc_type": "SID",
-                "filename": "hdfc_flexi_cap_sid.pdf"
+                "filename": "hdfc_flexi_cap_sid.html"
             }
         ]
     },
